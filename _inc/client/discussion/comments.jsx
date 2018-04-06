@@ -17,6 +17,7 @@ import { ModuleToggle } from 'components/module-toggle';
 import { ModuleSettingsForm as moduleSettingsForm } from 'components/module-settings/module-settings-form';
 import SettingsCard from 'components/settings-card';
 import SettingsGroup from 'components/settings-group';
+import CompactFormToggle from 'components/form/form-toggle/compact';
 
 class CommentsComponent extends React.Component {
 	/**
@@ -31,6 +32,27 @@ class CommentsComponent extends React.Component {
 			return this.props.updateFormStateModuleOption( module, 'wpcom_publish_comments_with_markdown' );
 		}
 		return this.props.updateFormStateModuleOption( module, 'wpcom_publish_comments_with_markdown', true );
+	};
+
+	handleGravatarHovercardsToggle = () => {
+		return () => this.props.updateFormStateModuleOption(
+			'gravatar',
+			'gravatar-hovercards'
+		);
+	};
+
+	handleMarkdownCommentsToggle = () => {
+		return () => this.props.updateFormStateModuleOption(
+			'markdown',
+			'wpcom_publish_comments_with_markdown'
+		);
+	};
+
+	handleCommentLikesToggle = () => {
+		return () => this.props.updateFormStateModuleOption(
+			'comments',
+			'comment-likes'
+		);
 	};
 
 	render() {
@@ -116,12 +138,11 @@ class CommentsComponent extends React.Component {
 							{
 								foundGravatar && (
 									<FormFieldset>
-										<ModuleToggle
-											slug="gravatar-hovercards"
-											compact
-											activated={ this.props.getOptionValue( 'gravatar-hovercards' ) }
+										<CompactFormToggle
+											checked={ this.props.getOptionValue( 'gravatar-hovercards' ) }
+											disabled={ this.props.isSavingAnyOption( 'gravatar-hovercards' ) }
 											toggling={ this.props.isSavingAnyOption( 'gravatar-hovercards' ) }
-											toggleModule={ this.props.toggleModuleNow }
+											toggleModule={ this.handleGravatarHovercardsToggle }
 										>
 											<span className="jp-form-toggle-explanation">
 												{
@@ -131,19 +152,18 @@ class CommentsComponent extends React.Component {
 													{ __( 'Learn more' ) }
 												</a>
 											</span>
-										</ModuleToggle>
+										</CompactFormToggle>
 									</FormFieldset>
 								)
 							}
 							{
 								foundMarkdown && (
 									<FormFieldset>
-										<ModuleToggle
-											slug="markdown"
-											compact
-											activated={ !! this.props.getOptionValue( 'wpcom_publish_comments_with_markdown', 'markdown' ) }
+										<CompactFormToggle
+											checked={ !! this.props.getOptionValue( 'wpcom_publish_comments_with_markdown', 'markdown' ) }
+											disabled={ this.props.isSavingAnyOption( [ 'markdown', 'wpcom_publish_comments_with_markdown' ] ) }
 											toggling={ this.props.isSavingAnyOption( [ 'markdown', 'wpcom_publish_comments_with_markdown' ] ) }
-											toggleModule={ this.updateFormStateByMarkdown }
+											toggleModule={ this.handleMarkdownCommentsToggle }
 										>
 											<span className="jp-form-toggle-explanation">
 												{
@@ -153,20 +173,19 @@ class CommentsComponent extends React.Component {
 													{ __( 'Learn more' ) }
 												</a>
 											</span>
-										</ModuleToggle>
+										</CompactFormToggle>
 									</FormFieldset>
 								)
 							}
 							{
 								foundCommentLikes && (
 									<FormFieldset>
-										<ModuleToggle
-											slug="comment-likes"
-											compact
-											disabled={ commentLikesUnavailable }
-											activated={ commentLikesActive }
+
+										<CompactFormToggle
+											checked={ commentLikesActive }
+											disabled={ this.props.isSavingAnyOption( 'comment-likes' ) || commentLikesUnavailable }
 											toggling={ this.props.isSavingAnyOption( 'comment-likes' ) }
-											toggleModule={ this.props.toggleModuleNow }
+											toggleModule={ this.handleCommentLikesToggle }
 										>
 											<span className="jp-form-toggle-explanation">
 												{
@@ -176,7 +195,7 @@ class CommentsComponent extends React.Component {
 													{ __( 'Learn more' ) }
 												</a>
 											</span>
-										</ModuleToggle>
+										</CompactFormToggle>
 									</FormFieldset>
 								)
 							}
