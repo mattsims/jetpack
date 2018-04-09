@@ -42,7 +42,7 @@ function mixcloud_shortcode( $atts, $content = null ) {
 
 
 	// Build URL
-	$url = add_query_arg( $atts, "http://api.mixcloud.com/$resource_id/embed-html/" );
+	$url = add_query_arg( $atts, "https://api.mixcloud.com/$resource_id/embed-html/" );
 	$head = wp_remote_head( $url );
 	if ( is_wp_error( $head ) || 200 != $head['response']['code'] )
 		return "<!-- mixcloud error: invalid mixcloud resource -->";
